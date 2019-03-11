@@ -1,1 +1,1 @@
-/home/tanja/Programmieren/Rust/pH_calculator/target/debug/pH_calculator: /home/tanja/Programmieren/Rust/pH_calculator/src/main.rs
+/Users/tanks/Projects/pH_calculator/target/debug/pH_calculator.dSYM: /Users/tanks/Projects/pH_calculator/src/main.rs

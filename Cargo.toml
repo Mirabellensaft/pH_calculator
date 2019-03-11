@@ -1,6 +1,6 @@
 [package]
 name = "pH_calculator"
 version = "0.1.0"
-authors = ["Mirabellensaft <tanja@transfeld.net>"]
+authors = ["Mirabellensaft <>"]
 
 [dependencies]
