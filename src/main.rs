@@ -4,88 +4,68 @@ use std::io;
 
 fn main() {
     //getting Userinput
-    println!("Please enter the name of the analyte:");
-    let mut name_analyte = String::new();
-    io::stdin().read_line(&mut name_analyte);
 
-    println!("Please enter the amount to be analysed in l:");
-    let mut vol_analyte = String::new();
-    io::stdin().read_line(&mut vol_analyte)
+    // the titrant is a standard solution with known concentration
+    // the analyte, a solution with a certain Volume but unknown concentration
+
+    println!("Please enter the name of the analyte:");
+    let properties_analyte = build_substance_properties();
+
+    println!("Please enter the name of the titrant:");
+    let properties_titrant = build_substance_properties();
+
+    //let conc_titrant = 0.5_f64;
+    let conc_ions_titrant = properties_titrant.valence * properties_titrant.concentration;
+
+    let pH_analyte = pH_strong(conc_ions_titrant, properties_analyte.volume, properties_titrant.volume, properties_titrant.valence, &properties_titrant.substance);
+    let conc_ions_analyte = conc_analyte_ions(properties_titrant.volume, conc_ions_titrant, properties_analyte.volume);
+    //println!("The concentration of the {} is {:.2} mol/l", name_analyte, conc_analyte);
+    println!("The pH of the {} is {:.2}", properties_analyte.substance, pH_analyte);
+    println!("The concentration of the {} is {:.2} mol/l", properties_analyte.substance, conc_ions_analyte);
+
+    println!("{}l of {} molar {} was used.", properties_titrant.volume, properties_titrant.concentration, properties_titrant.substance);
+}
+
+struct Properties {
+
+    substance: String,
+    concentration: f32,
+    volume: f32,
+    valence: f32,
+}
+
+fn build_substance_properties() -> Properties {
+
+    let mut name = String::new();
+    io::stdin().read_line(&mut name);
+
+    println!("Please enter the volume of the substance in l:");
+    let mut volume = String::new();
+    io::stdin().read_line(&mut volume)
 
         .expect("Failed to read line");
 
-    let vol_analyte: f32 = match vol_analyte.trim().parse() {
+    let volume: f32 = match volume.trim().parse() {
         Ok(num) => num,
         Err(_) => panic!{"Oops"},
     };
 
-
-    println!("Please enter the name of the titrant:");
-    let mut name_titrant = String::new();
-    io::stdin().read_line(&mut name_titrant);
-
-    //concentration of OH- or H+ Ions in titrant
-    println!("Please enter the concentration of the titrant in mol/l:");
-    let mut conc_titrant = String::new();
-    io::stdin().read_line(&mut conc_titrant)
+    println!("Please enter the concentration of the substance in mol/l, if known:");
+    let mut concentration = String::new();
+    io::stdin().read_line(&mut concentration)
 
         .expect("Failed to read line");
 
-    let conc_titrant: f32 = match conc_titrant.trim().parse() {
+    let concentration: f32 = match concentration.trim().parse() {
         Ok(num) => num,
-        Err(_) => panic!{"Oops"}
+        Err(_) => 0_f32
     };
 
-    println!("Please enter the amount in l used of the titrant:");
-    let mut vol_titrant = String::new();
-    io::stdin().read_line(&mut vol_titrant)
-
-        .expect("Failed to read line");
-
-    let vol_titrant: f32 = match vol_titrant.trim().parse() {
-        Ok(num) => num,
-        Err(_) => panic!{"Oops"}
-    };
-
-
-    //There needs to be a HashMap!
-
-    // the titrant is a standard solution with known Concentration
-    // the analyte, a solution with a certain Volume but unknown concentration
-
-    // is there a way to read valence from formula sting?
-
-    //Number of OH- and H+ Ions per unit
-    let valence_titrant = 1_f32;
-    let valence_analyte = 1_f32;
-
-
-    //let conc_titrant = 0.5_f64;
-    let conc_ions_titrant = valence_titrant * conc_titrant;
-
-    //Volume of each solution
-    //let vol_titrant = 0.3_f64;
-    //let vol_analyte = 0.7_f64;
-
-    let pH_analyte = pH_strong(conc_ions_titrant, vol_analyte, vol_titrant, valence_titrant, &name_titrant);
-    let conc_ions_analyte = conc_analyte_ions(vol_titrant, conc_ions_titrant, vol_analyte);
-    //println!("The concentration of the {} is {:.2} mol/l", name_analyte, conc_analyte);
-    println!("The pH of the {} is {:.2}", name_analyte, pH_analyte);
-    println!("The concentration of the {} is {:.2} mol/l", name_analyte, conc_ions_analyte);
-
-    println!("{}l of {} molar {} was used.", vol_titrant, conc_titrant, name_titrant);
-}
-
-struct Properties {
-    substance: String,
-    concentration: f32,
-    volume_used: f32,
-}
-fn build_substance_properties(substance: String, concentration: f32, volume_used: f32) -> Properties {
     Properties {
-        substance,
-        concentration,
-        volume_used,
+        substance: name,
+        concentration: concentration,
+        volume: volume,
+        valence: 1_f32,
     }
 }
 
