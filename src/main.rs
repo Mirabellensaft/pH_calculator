@@ -14,17 +14,17 @@ fn main() {
     println!("Please enter the name of the titrant:");
     let properties_titrant = build_substance_properties();
 
-    //let conc_titrant = 0.5_f64;
-    let conc_ions_titrant = properties_titrant.valence * properties_titrant.concentration;
+    let pH_analyte = pH_strong(properties_titrant.concentration, properties_analyte.volume, properties_titrant.volume, properties_titrant.valence, &properties_titrant.substance);
+    let conc_ions_analyte = conc_analyte_ions(properties_titrant.volume, properties_titrant.concentration, properties_analyte.volume);
 
-    let pH_analyte = pH_strong(conc_ions_titrant, properties_analyte.volume, properties_titrant.volume, properties_titrant.valence, &properties_titrant.substance);
-    let conc_ions_analyte = conc_analyte_ions(properties_titrant.volume, conc_ions_titrant, properties_analyte.volume);
-    //println!("The concentration of the {} is {:.2} mol/l", name_analyte, conc_analyte);
     println!("The pH of the {} is {:.2}", properties_analyte.substance, pH_analyte);
     println!("The concentration of the {} is {:.2} mol/l", properties_analyte.substance, conc_ions_analyte);
 
     println!("{}l of {} molar {} was used.", properties_titrant.volume, properties_titrant.concentration, properties_titrant.substance);
 }
+
+
+// Building the properties struct
 
 struct Properties {
 
@@ -68,6 +68,8 @@ fn build_substance_properties() -> Properties {
         valence: 1_f32,
     }
 }
+
+//Calculations
 
 fn conc_analyte_ions(vol_titrant: f32, conc_ions_titrant: f32, vol_analyte: f32) -> f32 {
     // calculates the conentration of the ions in the analyte
